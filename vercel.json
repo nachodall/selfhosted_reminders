@@ -1,4 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npx prisma migrate deploy && npm run build"
+  "buildCommand": "if [ -n \"$DATABASE_URL\" ]; then npx prisma migrate deploy; fi && npm run build"
 }
