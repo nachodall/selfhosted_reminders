@@ -38,7 +38,7 @@ export default function Dashboard({ initial }: { initial: ReminderDTO[] }) {
   const pendingCount = reminders.filter((r) => r.sentAt === null).length;
 
   return (
-    <main className="mx-auto w-full max-w-[620px] px-5 pt-12 pb-24 sm:pt-16">
+    <main className="page-shell mx-auto w-full max-w-[620px] px-5 pb-24">
       <header className="mb-8">
         <div className="flex items-baseline justify-between">
           <h1 className="text-lg" style={{ color: "var(--fg)" }}>

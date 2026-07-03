@@ -51,8 +51,10 @@ async function tick() {
       return;
     }
     const data = await res.json();
-    if (data.notified > 0) {
-      console.log(`[${ts}] ✓ ${data.notified} notificación(es) enviada(s)`);
+    if (data.checked > 0) {
+      console.log(
+        `[${ts}] ✓ ${data.checked} vencido(s), ${data.delivered} push entregado(s)`
+      );
     } else {
       console.log(`[${ts}] · sin recordatorios vencidos`);
     }

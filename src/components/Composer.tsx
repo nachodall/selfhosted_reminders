@@ -15,10 +15,15 @@ export default function Composer({ onCreated }: { onCreated: () => void }) {
     setBusy(true);
     setError(null);
     try {
+      // `when` es un string "naive" (sin zona horaria) de <input datetime-local>.
+      // Lo convertimos a un instante UTC acá, en el navegador, donde sí sabemos
+      // la zona horaria real del usuario — si se manda tal cual, el servidor lo
+      // interpreta como UTC y el recordatorio queda desfasado.
+      const remindAt = new Date(when).toISOString();
       const res = await fetch("/api/reminders", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: text.trim(), remindAt: when }),
+        body: JSON.stringify({ text: text.trim(), remindAt }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

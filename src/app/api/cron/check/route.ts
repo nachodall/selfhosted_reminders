@@ -24,21 +24,25 @@ async function handle(request: Request) {
     orderBy: { remindAt: "asc" },
   });
 
-  let notified = 0;
+  let delivered = 0;
   for (const reminder of due) {
-    await sendToAll({
+    const count = await sendToAll({
       title: "⏰ Recordatorio",
       body: reminder.text,
       reminderId: reminder.id,
     });
+    delivered += count;
     await prisma.reminder.update({
       where: { id: reminder.id },
       data: { sentAt: new Date() },
     });
-    notified++;
   }
 
-  return NextResponse.json({ checked: due.length, notified, at: now.toISOString() });
+  return NextResponse.json({
+    checked: due.length,
+    delivered,
+    at: now.toISOString(),
+  });
 }
 
 export async function GET(request: Request) {
