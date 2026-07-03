@@ -60,10 +60,12 @@ export type SubscribeResult =
 export async function enablePush(): Promise<SubscribeResult> {
   if (checkPushSupport() !== "ok") return { ok: false, reason: "unsupported" };
 
-  const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  if (!key) return { ok: false, reason: "no-key" };
-
   try {
+    // La clave pública VAPID se resuelve en el server (env o auto-generada en DB).
+    const keyRes = await fetch("/api/push/vapid-public-key");
+    const key = keyRes.ok ? (await keyRes.json()).publicKey : null;
+    if (!key) return { ok: false, reason: "no-key" };
+
     const permission = await Notification.requestPermission();
     if (permission !== "granted") return { ok: false, reason: "denied" };
 
