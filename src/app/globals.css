@@ -126,7 +126,8 @@ input[type="datetime-local"] {
   padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
 }
 
-/* Swipe-to-delete: fondo "rm" revelado detrás de la fila al arrastrar */
+/* Swipe: revela un panel detrás de la fila.
+   Izquierda → "rm" (borrar, a la derecha). Derecha → "edit" (a la izquierda). */
 .swipe-row {
   position: relative;
   overflow: hidden;
@@ -136,11 +137,17 @@ input[type="datetime-local"] {
   inset: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding-right: 1.5rem;
-  background: var(--danger);
+  padding: 0 1.5rem;
   color: var(--bg);
   font-size: 13px;
+}
+.swipe-reveal.is-delete {
+  justify-content: flex-end;
+  background: var(--danger);
+}
+.swipe-reveal.is-edit {
+  justify-content: flex-start;
+  background: var(--accent);
 }
 .swipe-reveal span {
   transition: transform 0.15s ease;

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { ReminderDTO } from "@/lib/types";
 import NotificationBar from "@/components/NotificationBar";
 import Composer from "@/components/Composer";
-import ReminderList from "@/components/ReminderList";
+import ReminderList, { type ReminderPatch } from "@/components/ReminderList";
 
 export default function Dashboard({ initial }: { initial: ReminderDTO[] }) {
   const [reminders, setReminders] = useState<ReminderDTO[]>(initial);
@@ -35,6 +35,16 @@ export default function Dashboard({ initial }: { initial: ReminderDTO[] }) {
     refresh();
   }
 
+  async function handleUpdate(id: string, patch: ReminderPatch) {
+    const res = await fetch(`/api/reminders/${id}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) throw new Error("update failed");
+    await refresh();
+  }
+
   const pendingCount = reminders.filter((r) => r.sentAt === null).length;
 
   return (
@@ -55,7 +65,7 @@ export default function Dashboard({ initial }: { initial: ReminderDTO[] }) {
 
       <Composer onCreated={refresh} />
 
-      <ReminderList reminders={reminders} onDelete={handleDelete} />
+      <ReminderList reminders={reminders} onDelete={handleDelete} onUpdate={handleUpdate} />
     </main>
   );
 }

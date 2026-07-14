@@ -32,6 +32,12 @@ export function isPast(iso: string): boolean {
 export function defaultDateTimeLocal(): string {
   const d = new Date(Date.now() + 60 * 60 * 1000);
   d.setMinutes(0, 0, 0);
+  return toDateTimeLocal(d);
+}
+
+/** Convierte una fecha (ISO o Date) al string local que espera <input datetime-local>. */
+export function toDateTimeLocal(value: string | Date): string {
+  const d = typeof value === "string" ? new Date(value) : value;
   const p = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
 }
