@@ -160,3 +160,76 @@ input[type="datetime-local"] {
   background: var(--bg);
   touch-action: pan-y;
 }
+
+/* Switch de vistas (list / cal) */
+.tab {
+  background: transparent;
+  border: none;
+  font: inherit;
+  padding: 0 0 2px;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.tab[aria-current="true"] {
+  border-bottom-color: var(--accent);
+}
+
+/* ============================================================
+   Calendario
+   ============================================================ */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+/* Botón de navegación de mes (‹ ›) */
+.cal-nav {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+.cal-nav:hover {
+  color: var(--accent);
+}
+
+/* Celda de día: número arriba, puntitos debajo */
+.cal-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 7px 0 6px;
+  min-height: 46px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font: inherit;
+  transition: background 0.12s ease;
+}
+.cal-day.is-selected {
+  background: var(--accent-soft);
+}
+.cal-num {
+  font-size: 14px;
+  line-height: 1;
+}
+.cal-dots {
+  display: flex;
+  gap: 3px;
+  height: 5px;
+  align-items: center;
+}
+.cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}

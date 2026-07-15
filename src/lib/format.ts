@@ -28,6 +28,20 @@ export function isPast(iso: string): boolean {
   return new Date(iso).getTime() < Date.now();
 }
 
+/** Clave de día local `YYYY-MM-DD` (para agrupar reminders por día en el calendario). */
+export function toDateKey(value: string | Date): string {
+  const d = typeof value === "string" ? new Date(value) : value;
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+/** Hora local `HH:mm`. */
+export function formatTime(value: string | Date): string {
+  const d = typeof value === "string" ? new Date(value) : value;
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
 /** Valor por defecto para <input type="datetime-local">: ahora + 1h, redondeado. */
 export function defaultDateTimeLocal(): string {
   const d = new Date(Date.now() + 60 * 60 * 1000);

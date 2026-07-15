@@ -5,9 +5,13 @@ import type { ReminderDTO } from "@/lib/types";
 import NotificationBar from "@/components/NotificationBar";
 import Composer from "@/components/Composer";
 import ReminderList, { type ReminderPatch } from "@/components/ReminderList";
+import Calendar from "@/components/Calendar";
+
+type View = "list" | "cal";
 
 export default function Dashboard({ initial }: { initial: ReminderDTO[] }) {
   const [reminders, setReminders] = useState<ReminderDTO[]>(initial);
+  const [view, setView] = useState<View>("list");
 
   const refresh = useCallback(async () => {
     try {
@@ -59,13 +63,31 @@ export default function Dashboard({ initial }: { initial: ReminderDTO[] }) {
             {pendingCount} pending
           </span>
         </div>
+
+        <nav className="mt-3 flex items-center gap-4 text-[13px]">
+          {(["list", "cal"] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className="tab"
+              style={{ color: view === v ? "var(--accent)" : "var(--muted)" }}
+              aria-current={view === v}
+            >
+              {v}
+            </button>
+          ))}
+        </nav>
       </header>
 
-      <NotificationBar />
-
-      <Composer onCreated={refresh} />
-
-      <ReminderList reminders={reminders} onDelete={handleDelete} onUpdate={handleUpdate} />
+      {view === "list" ? (
+        <>
+          <NotificationBar />
+          <Composer onCreated={refresh} />
+          <ReminderList reminders={reminders} onDelete={handleDelete} onUpdate={handleUpdate} />
+        </>
+      ) : (
+        <Calendar reminders={reminders} />
+      )}
     </main>
   );
 }
