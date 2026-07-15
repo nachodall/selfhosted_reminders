@@ -62,7 +62,7 @@ paste — nothing to write from scratch.
 
 ### 1. Click deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fnachodall%2Fself_recordatorios&env=APP_PASSWORD,CRON_SECRET&envDescription=APP_PASSWORD%20is%20your%20login%20passcode.%20CRON_SECRET%20is%20any%20random%20string%20used%20to%20authenticate%20the%20cron%20trigger.&project-name=reminders&repository-name=reminders)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fnachodall%2Fselfhosted_reminders&env=APP_PASSWORD,CRON_SECRET&envDescription=APP_PASSWORD%20is%20your%20login%20passcode.%20CRON_SECRET%20is%20any%20random%20string%20used%20to%20authenticate%20the%20cron%20trigger.&project-name=reminders&repository-name=reminders)
 
 This copies the code into your own GitHub account and starts creating a Vercel project.
 
