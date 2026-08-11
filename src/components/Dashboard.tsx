@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReminderDTO } from "@/lib/types";
 import NotificationBar from "@/components/NotificationBar";
 import Composer from "@/components/Composer";
@@ -92,6 +92,14 @@ export default function Dashboard({ initial }: { initial: ReminderDTO[] }) {
 
   const pendingCount = reminders.filter((r) => r.sentAt === null).length;
 
+  // Grupos existentes: derivados de los reminders actuales, sin tabla aparte
+  // — si se borra el último reminder de un grupo, el grupo desaparece solo.
+  const existingGroups = useMemo(() => {
+    const names = new Set<string>();
+    for (const r of reminders) if (r.groupName) names.add(r.groupName);
+    return [...names].sort((a, b) => a.localeCompare(b));
+  }, [reminders]);
+
   return (
     <main className="page-shell mx-auto w-full max-w-[620px] px-5 pb-24">
       <header className="mb-8">
@@ -130,8 +138,13 @@ export default function Dashboard({ initial }: { initial: ReminderDTO[] }) {
       {view === "list" ? (
         <>
           <NotificationBar />
-          <Composer onCreated={refresh} />
-          <ReminderList reminders={reminders} onDelete={handleDelete} onUpdate={handleUpdate} />
+          <Composer onCreated={refresh} existingGroups={existingGroups} />
+          <ReminderList
+            reminders={reminders}
+            existingGroups={existingGroups}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+          />
         </>
       ) : (
         <Calendar reminders={reminders} />

@@ -2,10 +2,18 @@
 
 import { useState } from "react";
 import { defaultDateTimeLocal } from "@/lib/format";
+import { groupColorClass } from "@/lib/groupColor";
 
-export default function Composer({ onCreated }: { onCreated: () => void }) {
+export default function Composer({
+  onCreated,
+  existingGroups,
+}: {
+  onCreated: () => void;
+  existingGroups: string[];
+}) {
   const [text, setText] = useState("");
   const [when, setWhen] = useState(defaultDateTimeLocal());
+  const [group, setGroup] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +31,7 @@ export default function Composer({ onCreated }: { onCreated: () => void }) {
       const res = await fetch("/api/reminders", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: text.trim(), remindAt }),
+        body: JSON.stringify({ text: text.trim(), remindAt, groupName: group.trim() || null }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -32,6 +40,7 @@ export default function Composer({ onCreated }: { onCreated: () => void }) {
       }
       setText("");
       setWhen(defaultDateTimeLocal());
+      setGroup("");
       onCreated();
     } catch {
       // Fallo de red (ej. iPhone sin señal al tocar add): no lo tragamos en
@@ -58,6 +67,28 @@ export default function Composer({ onCreated }: { onCreated: () => void }) {
           autoFocus
           maxLength={280}
         />
+      </div>
+
+      <div className="mt-2 flex items-center gap-2">
+        <span
+          className={group.trim() ? groupColorClass(group) : undefined}
+          style={{ color: group.trim() ? undefined : "var(--muted)" }}
+        >
+          #
+        </span>
+        <input
+          className="term-input"
+          placeholder="group (optional)"
+          value={group}
+          onChange={(e) => setGroup(e.target.value)}
+          list="existing-groups"
+          maxLength={60}
+        />
+        <datalist id="existing-groups">
+          {existingGroups.map((g) => (
+            <option key={g} value={g} />
+          ))}
+        </datalist>
       </div>
 
       <div className="mt-3 flex items-center gap-2">

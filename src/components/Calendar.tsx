@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { ReminderDTO } from "@/lib/types";
 import { toDateKey, formatTime } from "@/lib/format";
+import { groupColorClass } from "@/lib/groupColor";
 
 const MONTHS = [
   "january", "february", "march", "april", "may", "june",
@@ -160,7 +161,14 @@ export default function Calendar({ reminders }: { reminders: ReminderDTO[] }) {
                 <span className="shrink-0 tabular-nums text-[12px]" style={{ color: "var(--muted)" }}>
                   {formatTime(r.remindAt)}
                 </span>
-                <span className="min-w-0 break-words leading-snug">{r.text}</span>
+                <span className="min-w-0 break-words leading-snug">
+                  {r.text}
+                  {r.groupName && (
+                    <span className={`ml-2 text-[12px] ${groupColorClass(r.groupName)}`}>
+                      #{r.groupName}
+                    </span>
+                  )}
+                </span>
               </div>
             );
           })}

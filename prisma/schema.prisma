@@ -16,6 +16,7 @@ model Reminder {
   remindAt  DateTime
   createdAt DateTime  @default(now())
   sentAt    DateTime? // null = todavía no notificado
+  groupName String?   // null = sin grupo. El color se deriva del nombre (ver src/lib/groupColor.ts) — no se guarda.
 
   @@index([remindAt])
 }

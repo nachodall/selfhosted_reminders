@@ -16,7 +16,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
 
-  const { text, remindAt } = (data ?? {}) as { text?: string; remindAt?: string };
+  const { text, remindAt, groupName } = (data ?? {}) as {
+    text?: string;
+    remindAt?: string;
+    groupName?: string | null;
+  };
 
   if (!text || typeof text !== "string" || !text.trim()) {
     return NextResponse.json({ error: "El texto es obligatorio" }, { status: 400 });
@@ -31,7 +35,11 @@ export async function POST(request: Request) {
   }
 
   const reminder = await prisma.reminder.create({
-    data: { text: text.trim(), remindAt: when },
+    data: {
+      text: text.trim(),
+      remindAt: when,
+      groupName: groupName?.trim() || null,
+    },
   });
 
   return NextResponse.json(reminder, { status: 201 });

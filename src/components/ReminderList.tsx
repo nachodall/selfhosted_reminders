@@ -3,24 +3,28 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReminderDTO } from "@/lib/types";
 import { formatStamp, relativeTime, isPast, toDateTimeLocal } from "@/lib/format";
+import { groupColorClass } from "@/lib/groupColor";
 
 const DELETE_THRESHOLD = -84;
 const EDIT_THRESHOLD = 84;
 const MAX_DRAG = 140;
 
-export type ReminderPatch = { text: string; remindAt: string };
+export type ReminderPatch = { text: string; remindAt: string; groupName: string | null };
 
 function EditRow({
   r,
+  existingGroups,
   onSave,
   onCancel,
 }: {
   r: ReminderDTO;
+  existingGroups: string[];
   onSave: (patch: ReminderPatch) => Promise<void>;
   onCancel: () => void;
 }) {
   const [text, setText] = useState(r.text);
   const [when, setWhen] = useState(toDateTimeLocal(r.remindAt));
+  const [group, setGroup] = useState(r.groupName ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +33,11 @@ function EditRow({
     setBusy(true);
     setError(null);
     try {
-      await onSave({ text: text.trim(), remindAt: new Date(when).toISOString() });
+      await onSave({
+        text: text.trim(),
+        remindAt: new Date(when).toISOString(),
+        groupName: group.trim() || null,
+      });
       // onSave desmonta esta fila al refrescar; no hace falta limpiar estado.
     } catch {
       setError("no se pudo guardar, probá de nuevo");
@@ -52,6 +60,27 @@ function EditRow({
             if (e.key === "Escape") onCancel();
           }}
         />
+      </div>
+      <div className="mt-2 flex items-center gap-2">
+        <span
+          className={group.trim() ? groupColorClass(group) : undefined}
+          style={{ color: group.trim() ? undefined : "var(--muted)" }}
+        >
+          #
+        </span>
+        <input
+          className="term-input"
+          placeholder="group (optional)"
+          value={group}
+          onChange={(e) => setGroup(e.target.value)}
+          list="existing-groups-edit"
+          maxLength={60}
+        />
+        <datalist id="existing-groups-edit">
+          {existingGroups.map((g) => (
+            <option key={g} value={g} />
+          ))}
+        </datalist>
       </div>
       <div className="mt-2 flex items-center gap-2">
         <span style={{ color: "var(--muted)" }}>@</span>
@@ -81,10 +110,12 @@ function EditRow({
 
 function Row({
   r,
+  existingGroups,
   onDelete,
   onUpdate,
 }: {
   r: ReminderDTO;
+  existingGroups: string[];
   onDelete: (id: string) => void;
   onUpdate: (id: string, patch: ReminderPatch) => Promise<void>;
 }) {
@@ -135,6 +166,7 @@ function Row({
       <li className="swipe-row" style={{ opacity: sent ? 0.7 : 1 }}>
         <EditRow
           r={r}
+          existingGroups={existingGroups}
           onCancel={() => setEditing(false)}
           onSave={async (patch) => {
             await onUpdate(r.id, patch);
@@ -177,6 +209,9 @@ function Row({
             <span style={{ color: "var(--faint, var(--muted))" }}>
               {sent ? "sent" : relativeTime(date)}
             </span>
+            {r.groupName && (
+              <span className={groupColorClass(r.groupName)}>#{r.groupName}</span>
+            )}
           </div>
           <p className="mt-0.5 break-words leading-snug">{r.text}</p>
         </div>
@@ -187,10 +222,12 @@ function Row({
 
 export default function ReminderList({
   reminders,
+  existingGroups,
   onDelete,
   onUpdate,
 }: {
   reminders: ReminderDTO[];
+  existingGroups: string[];
   onDelete: (id: string) => void;
   onUpdate: (id: string, patch: ReminderPatch) => Promise<void>;
 }) {
@@ -217,7 +254,7 @@ export default function ReminderList({
   return (
     <ul className="rlist">
       {pending.map((r) => (
-        <Row key={r.id} r={r} onDelete={onDelete} onUpdate={onUpdate} />
+        <Row key={r.id} r={r} existingGroups={existingGroups} onDelete={onDelete} onUpdate={onUpdate} />
       ))}
 
       {done.length > 0 && (
@@ -227,7 +264,7 @@ export default function ReminderList({
       )}
 
       {done.map((r) => (
-        <Row key={r.id} r={r} onDelete={onDelete} onUpdate={onUpdate} />
+        <Row key={r.id} r={r} existingGroups={existingGroups} onDelete={onDelete} onUpdate={onUpdate} />
       ))}
     </ul>
   );

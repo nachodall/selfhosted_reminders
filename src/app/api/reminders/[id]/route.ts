@@ -28,14 +28,23 @@ export async function PATCH(
     return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
 
-  const { text, remindAt } = (data ?? {}) as { text?: string; remindAt?: string };
+  const { text, remindAt, groupName } = (data ?? {}) as {
+    text?: string;
+    remindAt?: string;
+    groupName?: string | null;
+  };
 
   const existing = await prisma.reminder.findUnique({ where: { id } });
   if (!existing) {
     return NextResponse.json({ error: "No encontrado" }, { status: 404 });
   }
 
-  const update: { text?: string; remindAt?: Date; sentAt?: Date | null } = {};
+  const update: {
+    text?: string;
+    remindAt?: Date;
+    sentAt?: Date | null;
+    groupName?: string | null;
+  } = {};
 
   if (text !== undefined) {
     if (typeof text !== "string" || !text.trim()) {
@@ -54,6 +63,10 @@ export async function PATCH(
     if (when.getTime() !== existing.remindAt.getTime()) {
       update.sentAt = null;
     }
+  }
+
+  if (groupName !== undefined) {
+    update.groupName = groupName?.trim() || null;
   }
 
   const reminder = await prisma.reminder.update({ where: { id }, data: update });

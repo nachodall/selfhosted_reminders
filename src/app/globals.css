@@ -12,6 +12,14 @@
   --accent-soft: rgba(79, 111, 79, 0.1);
   --border: #e4e1d8;
   --danger: #a13d3d;
+
+  /* Paleta de tags de grupo — inspirada en colores ANSI, desaturada */
+  --tag-0: #4f6f4f; /* verde */
+  --tag-1: #3d5a80; /* azul */
+  --tag-2: #8a6d1f; /* ámbar */
+  --tag-3: #8a4f6f; /* magenta */
+  --tag-4: #2f6f6f; /* cian */
+  --tag-5: #a1602f; /* naranja */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +32,13 @@
     --accent-soft: rgba(126, 198, 153, 0.12);
     --border: #232323;
     --danger: #d98b8b;
+
+    --tag-0: #7ec699;
+    --tag-1: #8fb4d9;
+    --tag-2: #d9c17e;
+    --tag-3: #d99bc0;
+    --tag-4: #7ecece;
+    --tag-5: #d9a17e;
   }
 }
 
@@ -247,3 +262,11 @@ input[type="datetime-local"] {
   border-radius: 50%;
   background: var(--accent);
 }
+
+/* Tag de grupo — texto de color, sin relleno, junto al timestamp */
+.tag-0 { color: var(--tag-0); }
+.tag-1 { color: var(--tag-1); }
+.tag-2 { color: var(--tag-2); }
+.tag-3 { color: var(--tag-3); }
+.tag-4 { color: var(--tag-4); }
+.tag-5 { color: var(--tag-5); }

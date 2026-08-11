@@ -14,6 +14,7 @@ export default async function Home() {
     text: r.text,
     remindAt: r.remindAt.toISOString(),
     sentAt: r.sentAt ? r.sentAt.toISOString() : null,
+    groupName: r.groupName,
   }));
 
   return <Dashboard initial={initial} />;
